@@ -1,15 +1,22 @@
 package com.example.avslyceumkotlinexamapp.data.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
+@Entity
 @Serializable
 data class ProductModel (
+    @PrimaryKey
     val id: Int,
     val title: String,
     val description: String,
     val price: Double,
     val rating: Float,
-    val thumbnail: String // Thumbnail URL
+
+    @SerializedName("thumbnail")
+    val imageUrl: String // Thumbnail URL
 )
 /*
 SAMPLE JSON

@@ -1,8 +1,11 @@
 package com.example.avslyceumkotlinexamapp.ui.products.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.avslyceumkotlinexamapp.App
 import com.example.avslyceumkotlinexamapp.data.api.DummyProductsApi
+import com.example.avslyceumkotlinexamapp.data.dao.ProductsDatabase
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +34,22 @@ class ProductsViewModel : ViewModel() {
         return retrofit.create(DummyProductsApi::class.java)
     }
 
+    private fun getDb() : ProductsDatabase? {
+        return App.getDatabase()
+    }
+
     init {
+        val db = getDb()
+
+        db?.let {
+            val productsDao = db.productsDao()
+
+            val storedProducts = productsDao.getAll()
+            if (storedProducts.isEmpty()) return@let
+
+            state.value = state.value.copy(products = storedProducts, currentPage = storedProducts.last().id.div(10) + 1)
+        }
+
         if (state.value.products.isEmpty()) {
             handleEvent(ProductsEvent.OnGetMoreButtonClicked)
         }
@@ -48,8 +66,16 @@ class ProductsViewModel : ViewModel() {
                             currentPage = state.value.currentPage + 1,
                             products = state.value.products + response.products
                         )
+
+                        val db = getDb()
+                        Log.d("DB AT INSERT", db.toString())
+                        db?.let {
+                            val productsDao = db.productsDao()
+
+                            productsDao.insertAll(response.products)
+                        }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Log.e("Products ViewModel", "ERROR", e)
                     }
                 }
             }

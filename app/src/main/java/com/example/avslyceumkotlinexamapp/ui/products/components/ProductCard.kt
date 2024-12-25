@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,7 +39,7 @@ fun ProductCard(
             .padding(12.dp)) {
 
             GlideImage(
-                model = product.thumbnail,
+                model = product.imageUrl,
                 contentDescription = "Product thumbnail",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,7 +77,7 @@ fun ProductCardPreview() {
         id = 0,
         price = 29.95,
         rating = 4.34f,
-        thumbnail = "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png"
+        imageUrl = "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png"
     )
 
     ProductCard(product, onEvent = {})
