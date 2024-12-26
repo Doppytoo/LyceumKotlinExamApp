@@ -1,6 +1,7 @@
 package com.example.avslyceumkotlinexamapp.ui.products.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,11 +33,14 @@ fun ProductCard(
     onEvent: (ProductsEvent) -> Unit,
 ) {
     Card(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier = Modifier
+            .clickable { onEvent(ProductsEvent.OnCardClicked(product)) }
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
 
             GlideImage(
                 model = product.imageUrl,
@@ -44,8 +48,8 @@ fun ProductCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .background(Color.White, shape = RoundedCornerShape(4.dp))
-                    .clip(RoundedCornerShape(4.dp))
+                    .background(Color.White, shape = RoundedCornerShape(6.dp))
+                    .clip(RoundedCornerShape(6.dp))
             )
 
             Spacer(modifier = Modifier.padding(4.dp))
@@ -61,7 +65,7 @@ fun ProductCard(
             }
 
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 6.dp)
             )
             Text(product.description, style = MaterialTheme.typography.bodyMedium)
         }
@@ -77,7 +81,8 @@ fun ProductCardPreview() {
         id = 0,
         price = 29.95,
         rating = 4.34f,
-        imageUrl = "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png"
+        imageUrl = "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png",
+        stock = 7
     )
 
     ProductCard(product, onEvent = {})

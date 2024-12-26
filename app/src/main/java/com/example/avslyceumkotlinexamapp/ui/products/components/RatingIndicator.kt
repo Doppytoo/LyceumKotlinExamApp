@@ -3,7 +3,7 @@ package com.example.avslyceumkotlinexamapp.ui.products.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -31,7 +31,7 @@ fun RatingIndicator(
     Row(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.Bottom,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.height(24.dp)
     ) {
         val filledStars = rating.toInt() // Fully filled stars
         val fractionalPart = rating - filledStars // Fractional star part
@@ -69,7 +69,7 @@ fun RatingIndicator(
         }
 
         Text(
-            "$rating/5",
+            "${if (rating == rating.toInt().toFloat()) rating.toInt() else rating}/5",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal,
                 color = Color.DarkGray

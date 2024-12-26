@@ -3,6 +3,7 @@ package com.example.avslyceumkotlinexamapp.data.api
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
 import com.example.avslyceumkotlinexamapp.data.models.ProductsResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface DummyProductsApi {
@@ -13,6 +14,10 @@ interface DummyProductsApi {
 //        @Query("select") select: String = "title,price"
     ): ProductsResponse
 
+    @GET("/products/{id}")
+    suspend fun getProductById(
+        @Path("id") id: Int
+    ): ProductModel
 //    @GET
 //    suspend fun getProductsByPage(
 //        page: Int,

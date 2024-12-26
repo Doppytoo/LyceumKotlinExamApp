@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.avslyceumkotlinexamapp.App
 import com.example.avslyceumkotlinexamapp.data.api.DummyProductsApi
 import com.example.avslyceumkotlinexamapp.data.dao.ProductsDatabase
+import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEffect
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsState
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient.Builder
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,6 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ProductsViewModel : ViewModel() {
 
     val state = MutableStateFlow(ProductsState())
+
+    private val _effect = Channel<ProductsEffect>()
+    val effect = _effect.receiveAsFlow()
 
     private fun getApi(): DummyProductsApi {
         val okHttpClient = Builder()
@@ -51,13 +57,13 @@ class ProductsViewModel : ViewModel() {
         }
 
         if (state.value.products.isEmpty()) {
-            handleEvent(ProductsEvent.OnGetMoreButtonClicked)
+            handleEvent(ProductsEvent.OnLoadMoreButtonClicked)
         }
     }
 
     fun handleEvent(event: ProductsEvent) {
         when (event) {
-            ProductsEvent.OnGetMoreButtonClicked -> {
+            ProductsEvent.OnLoadMoreButtonClicked -> {
                 val api = getApi()
                 viewModelScope.launch {
                     try {
@@ -77,6 +83,14 @@ class ProductsViewModel : ViewModel() {
                     } catch (e: Exception) {
                         Log.e("Products ViewModel", "ERROR", e)
                     }
+                }
+            }
+            is ProductsEvent.OnCardClicked -> {
+                val api = getApi()
+                viewModelScope.launch {
+                    val refreshedProduct = api.getProductById(event.product.id)
+
+                    _effect.send(ProductsEffect.OpenDetails(refreshedProduct))
                 }
             }
         }
