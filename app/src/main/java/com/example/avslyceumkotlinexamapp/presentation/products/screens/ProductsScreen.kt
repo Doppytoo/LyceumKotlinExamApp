@@ -70,9 +70,9 @@ fun ProductsScreenContent(
     ) {
 
 
-        state.products.forEach { product ->
+        state.productsWithReviews.forEach { productWithReviews ->
             item {
-                ProductCard(product, onEvent = onEvent)
+                ProductCard(productWithReviews.product, onEvent = onEvent)
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }

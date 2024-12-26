@@ -35,6 +35,24 @@ interface ProductDao {
     fun getProductWithReviews(productId: Int): ProductWithReviews
 
     @Transaction
+    @Query("SELECT * FROM ProductModel")
+    fun getAllProductsWithReviews(): List<ProductWithReviews>
+
+    @Transaction
+    fun insertProductWithReviewsO(productWithReviews: ProductWithReviews) {
+        insertProduct(productWithReviews.product)
+        insertAllReviews(productWithReviews.reviews)
+    }
+
+    @Transaction
+    fun insertAllProductsWithReviewsO(productsWithReviews: List<ProductWithReviews>) {
+        insertAllProducts(productsWithReviews.map { it.product })
+        productsWithReviews.forEach {
+            insertAllReviews(it.reviews)
+        }
+    }
+
+    @Transaction
     fun insertProductWithReviews(product: ProductModel, reviews: List<ReviewModel>) {
         insertProduct(product)
         insertAllReviews(reviews)

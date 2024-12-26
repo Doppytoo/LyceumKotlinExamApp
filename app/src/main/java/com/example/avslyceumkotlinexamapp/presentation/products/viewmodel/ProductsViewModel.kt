@@ -7,6 +7,7 @@ import com.example.avslyceumkotlinexamapp.App
 import com.example.avslyceumkotlinexamapp.data.api.DummyProductsApi
 import com.example.avslyceumkotlinexamapp.data.dao.ProductDao
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
+import com.example.avslyceumkotlinexamapp.data.models.ProductWithReviews
 import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEffect
 import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEvent
 import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsState
@@ -49,16 +50,16 @@ class ProductsViewModel : ViewModel() {
         val dao = getDao()
 
         dao?.let {
-            val storedProducts = dao.getAllProducts()
+            val storedProducts = dao.getAllProductsWithReviews()
             if (storedProducts.isEmpty()) return@let
 
             state.value = state.value.copy(
-                products = storedProducts,
-                currentPage = storedProducts.last().id.div(10) + 1
+                productsWithReviews = storedProducts,
+                currentPage = storedProducts.last().product.id.div(10) + 1
             )
         }
 
-        if (state.value.products.isEmpty()) {
+        if (state.value.productsWithReviews.isEmpty()) {
             handleEvent(ProductsEvent.OnLoadMoreButtonClicked)
         }
     }
@@ -72,15 +73,15 @@ class ProductsViewModel : ViewModel() {
                         val newProducts = api.getProducts(
                             10,
                             10 * (state.value.currentPage + 1)
-                        ).products.map { it.toModel() }
+                        ).products.map { ProductWithReviews(it.toModel(), it.reviews) }
                         state.value = state.value.copy(
                             currentPage = state.value.currentPage + 1,
-                            products = state.value.products + newProducts
+                            productsWithReviews = state.value.productsWithReviews + newProducts
                         )
 
                         val dao = getDao()
                         dao?.let {
-                            dao.insertAllProducts(newProducts)
+                            dao.insertAllProductsWithReviewsO(newProducts)
                         }
                     } catch (e: Exception) {
                         Log.e("Products ViewModel", "ERROR", e)
@@ -89,45 +90,16 @@ class ProductsViewModel : ViewModel() {
             }
 
             is ProductsEvent.OnCardClicked -> {
-
-
                 viewModelScope.launch {
-                    fetchAndSaveProductWithReviews(productId = event.product.id)
+                    val productWithReviews = state.value.productsWithReviews.find { it.product.id == event.product.id }
 
-                    val dao = getDao()
-
-                    val productWithReviews = dao!!.getProductWithReviews(event.product.id)
-
-                    _effect.send(ProductsEffect.OpenDetails(productWithReviews))
-
+                    if (productWithReviews != null) {
+                        _effect.send(ProductsEffect.OpenDetails(productWithReviews))
+                    } else {
+                        Log.e("ProductsViewModel", "Unable to find product with reviews")
+                    }
                 }
             }
-        }
-    }
-
-    private suspend fun fetchAndSaveProductWithReviews(productId: Int) {
-        try {
-            val api = getApi()
-            val dao = getDao()
-            val response = api.getProductById(productId)
-
-            val product = ProductModel(
-                id = response.id,
-                title = response.title,
-                description = response.description,
-                price = response.price,
-                rating = response.rating,
-                imageUrl = response.imageUrl,
-                stock = response.stock
-            )
-
-            val reviews = response.reviews.map { review ->
-                review.copy(productId = response.id)
-            }
-
-            dao?.insertProductWithReviews(product, reviews)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }
