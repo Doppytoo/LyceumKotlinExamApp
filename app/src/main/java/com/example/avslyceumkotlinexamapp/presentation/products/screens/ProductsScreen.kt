@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.screens
+package com.example.avslyceumkotlinexamapp.presentation.products.screens
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.avslyceumkotlinexamapp.ui.products.components.ProductCard
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEffect
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsState
-import com.example.avslyceumkotlinexamapp.ui.products.screens.destinations.ProductDetailsScreenDestination
-import com.example.avslyceumkotlinexamapp.ui.products.viewmodel.ProductsViewModel
+import com.example.avslyceumkotlinexamapp.presentation.products.components.ProductCard
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEffect
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEvent
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsState
+import com.example.avslyceumkotlinexamapp.presentation.products.screens.destinations.ProductDetailsScreenDestination
+import com.example.avslyceumkotlinexamapp.presentation.products.viewmodel.ProductsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

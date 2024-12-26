@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.theme
+package com.example.avslyceumkotlinexamapp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

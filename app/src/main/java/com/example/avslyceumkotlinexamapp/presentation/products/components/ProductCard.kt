@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.components
+package com.example.avslyceumkotlinexamapp.presentation.products.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEvent
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

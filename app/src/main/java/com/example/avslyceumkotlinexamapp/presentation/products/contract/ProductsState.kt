@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.contract
+package com.example.avslyceumkotlinexamapp.presentation.products.contract
 
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
 

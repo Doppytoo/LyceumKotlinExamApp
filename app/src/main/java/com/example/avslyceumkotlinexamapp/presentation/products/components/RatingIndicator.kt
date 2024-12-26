@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.components
+package com.example.avslyceumkotlinexamapp.presentation.products.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement

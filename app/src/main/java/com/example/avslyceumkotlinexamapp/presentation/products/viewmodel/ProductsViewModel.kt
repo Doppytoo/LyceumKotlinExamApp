@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.viewmodel
+package com.example.avslyceumkotlinexamapp.presentation.products.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -7,9 +7,9 @@ import com.example.avslyceumkotlinexamapp.App
 import com.example.avslyceumkotlinexamapp.data.api.DummyProductsApi
 import com.example.avslyceumkotlinexamapp.data.dao.ProductDao
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEffect
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
-import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsState
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEffect
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsEvent
+import com.example.avslyceumkotlinexamapp.presentation.products.contract.ProductsState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -129,6 +129,5 @@ class ProductsViewModel : ViewModel() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 }

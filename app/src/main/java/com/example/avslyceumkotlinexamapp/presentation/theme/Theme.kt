@@ -1,6 +1,5 @@
-package com.example.avslyceumkotlinexamapp.ui.theme
+package com.example.avslyceumkotlinexamapp.presentation.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

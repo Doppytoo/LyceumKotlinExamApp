@@ -1,4 +1,4 @@
-package com.example.avslyceumkotlinexamapp.ui.products.screens
+package com.example.avslyceumkotlinexamapp.presentation.products.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.avslyceumkotlinexamapp.data.models.ProductWithReviews
-import com.example.avslyceumkotlinexamapp.ui.products.components.RatingIndicator
-import com.example.avslyceumkotlinexamapp.ui.products.components.ReviewCard
+import com.example.avslyceumkotlinexamapp.presentation.products.components.RatingIndicator
+import com.example.avslyceumkotlinexamapp.presentation.products.components.ReviewCard
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
