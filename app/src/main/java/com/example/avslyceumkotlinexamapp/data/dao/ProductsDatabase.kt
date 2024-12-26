@@ -2,29 +2,47 @@ package com.example.avslyceumkotlinexamapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import com.example.avslyceumkotlinexamapp.data.models.ProductModel
+import com.example.avslyceumkotlinexamapp.data.models.ReviewModel
+import com.example.avslyceumkotlinexamapp.data.models.ProductWithReviews
 
-@Database(entities = [ProductModel::class], version = 1)
+@Database(entities = [ProductModel::class, ReviewModel::class], version = 1)
 abstract class ProductsDatabase : RoomDatabase() {
-    abstract fun productsDao(): ProductDao
+    abstract fun productDao(): ProductDao
 }
 
 @Dao
 interface ProductDao {
-    @Query("SELECT * FROM productmodel")
-    fun getAll(): List<ProductModel>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProduct(product: ProductModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(product: ProductModel)
+    fun insertAllProducts(product: List<ProductModel>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(products: List<ProductModel>)
+    fun insertAllReviews(reviews: List<ReviewModel>)
 
-    @Delete
-    fun delete(product: ProductModel)
+    @Query("SELECT * FROM ProductModel")
+    fun getAllProducts(): List<ProductModel>
+
+    @Transaction
+    @Query("SELECT * FROM ProductModel WHERE id = :productId")
+    fun getProductWithReviews(productId: Int): ProductWithReviews
+
+    @Transaction
+    fun insertProductWithReviews(product: ProductModel, reviews: List<ReviewModel>) {
+        insertProduct(product)
+        insertAllReviews(reviews)
+    }
+
+    @Transaction
+    fun insertAllProductsWithReviews(products: List<ProductModel>, reviews: List<ReviewModel>) {
+        insertAllProducts(products)
+        insertAllReviews(reviews)
+    }
 }

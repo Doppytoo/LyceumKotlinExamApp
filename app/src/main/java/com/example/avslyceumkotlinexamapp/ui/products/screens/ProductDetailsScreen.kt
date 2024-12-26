@@ -26,10 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.avslyceumkotlinexamapp.data.models.ProductModel
+import com.example.avslyceumkotlinexamapp.data.models.ProductWithReviews
 import com.example.avslyceumkotlinexamapp.ui.products.components.RatingIndicator
 import com.example.avslyceumkotlinexamapp.ui.products.components.ReviewCard
 import com.ramcosta.composedestinations.annotation.Destination
@@ -40,7 +41,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun ProductDetailsScreen(
     navigator: DestinationsNavigator,
-    product: ProductModel
+    productWithReviews: ProductWithReviews
 ) {
     Scaffold(
         topBar = {
@@ -50,7 +51,7 @@ fun ProductDetailsScreen(
                         content = { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back button") },
                         onClick = { navigator.navigateUp() })
                 },
-                title = { Text(product.title) }
+                title = { Text(productWithReviews.product.title) }
             )
         }
     ) { innerPadding ->
@@ -63,7 +64,7 @@ fun ProductDetailsScreen(
 
             item {
                 GlideImage(
-                    model = product.imageUrl,
+                    model = productWithReviews.product.imageUrl,
                     contentDescription = "Product thumbnail",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -79,35 +80,50 @@ fun ProductDetailsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("\$${product.price}", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        "\$${productWithReviews.product.price}",
+                        style = MaterialTheme.typography.titleLarge
+                    )
 
-                    Text("В наличии ${product.stock}шт.")
+                    Text("В наличии ${productWithReviews.product.stock}шт.")
 //                RatingIndicator(product.rating)
                 }
 
                 Spacer(
                     modifier = Modifier.height(4.dp)
                 )
-                Text(product.description, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    productWithReviews.product.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 4.dp)
                 ) {
-                    RatingIndicator(product.rating)
+                    RatingIndicator(productWithReviews.product.rating)
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
                     )
                 }
             }
 
-            product.reviews.forEach { review ->
+            if (productWithReviews.reviews.isEmpty()) {
                 item {
-                    Spacer(Modifier.height(8.dp))
-                    ReviewCard(review)
+                    Text(
+                        "Отзывы не найдены\n(На товар нет отзывов или отсутствует подключение к интернету)",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                productWithReviews.reviews.forEach { review ->
+                    item {
+                        Spacer(Modifier.height(8.dp))
+                        ReviewCard(review)
+                    }
                 }
             }
-
         }
     }
 }

@@ -1,14 +1,28 @@
 package com.example.avslyceumkotlinexamapp.data.models
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = ProductModel::class,
+        parentColumns = ["id"],
+        childColumns = ["productId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class ReviewModel(
+    @PrimaryKey(autoGenerate = true) val reviewId: Int = 0,
+    val productId: Int, // Foreign key
     val rating: Float,
     val comment: String,
     val reviewerName: String,
     val reviewerEmail: String
 )
+
 
 /*
 {

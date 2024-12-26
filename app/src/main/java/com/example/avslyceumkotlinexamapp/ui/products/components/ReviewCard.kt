@@ -43,7 +43,8 @@ fun ReviewCardPreview() {
         reviewerName = "John Doe",
         reviewerEmail = "john.doe@example.com",
         rating = 4f,
-        comment = "Not bad at all, not bad I say..."
+        comment = "Not bad at all, not bad I say...",
+        productId = 0
     )
 
     ReviewCard(review)

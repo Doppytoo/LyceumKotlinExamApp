@@ -53,7 +53,7 @@ fun ProductsScreen(
         productsViewModel.effect.collectLatest { effect ->
             when (effect) {
                 is ProductsEffect.OpenDetails -> {
-                    navigator.navigate(ProductDetailsScreenDestination(product = effect.product))
+                    navigator.navigate(ProductDetailsScreenDestination(productWithReviews = effect.productWithReviews))
                 }
             }
         }

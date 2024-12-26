@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.avslyceumkotlinexamapp.App
 import com.example.avslyceumkotlinexamapp.data.api.DummyProductsApi
-import com.example.avslyceumkotlinexamapp.data.dao.ProductsDatabase
+import com.example.avslyceumkotlinexamapp.data.dao.ProductDao
+import com.example.avslyceumkotlinexamapp.data.models.ProductModel
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEffect
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsEvent
 import com.example.avslyceumkotlinexamapp.ui.products.contract.ProductsState
@@ -40,20 +41,21 @@ class ProductsViewModel : ViewModel() {
         return retrofit.create(DummyProductsApi::class.java)
     }
 
-    private fun getDb() : ProductsDatabase? {
-        return App.getDatabase()
+    private fun getDao(): ProductDao? {
+        return App.getDatabase()?.productDao()
     }
 
     init {
-        val db = getDb()
+        val dao = getDao()
 
-        db?.let {
-            val productsDao = db.productsDao()
-
-            val storedProducts = productsDao.getAll()
+        dao?.let {
+            val storedProducts = dao.getAllProducts()
             if (storedProducts.isEmpty()) return@let
 
-            state.value = state.value.copy(products = storedProducts, currentPage = storedProducts.last().id.div(10) + 1)
+            state.value = state.value.copy(
+                products = storedProducts,
+                currentPage = storedProducts.last().id.div(10) + 1
+            )
         }
 
         if (state.value.products.isEmpty()) {
@@ -67,32 +69,66 @@ class ProductsViewModel : ViewModel() {
                 val api = getApi()
                 viewModelScope.launch {
                     try {
-                        val response = api.getProducts(10, 10 * (state.value.currentPage + 1))
+                        val newProducts = api.getProducts(
+                            10,
+                            10 * (state.value.currentPage + 1)
+                        ).products.map { it.toModel() }
                         state.value = state.value.copy(
                             currentPage = state.value.currentPage + 1,
-                            products = state.value.products + response.products
+                            products = state.value.products + newProducts
                         )
 
-                        val db = getDb()
-                        Log.d("DB AT INSERT", db.toString())
-                        db?.let {
-                            val productsDao = db.productsDao()
-
-                            productsDao.insertAll(response.products)
+                        val dao = getDao()
+                        dao?.let {
+                            dao.insertAllProducts(newProducts)
                         }
                     } catch (e: Exception) {
                         Log.e("Products ViewModel", "ERROR", e)
                     }
                 }
             }
-            is ProductsEvent.OnCardClicked -> {
-                val api = getApi()
-                viewModelScope.launch {
-                    val refreshedProduct = api.getProductById(event.product.id)
 
-                    _effect.send(ProductsEffect.OpenDetails(refreshedProduct))
+            is ProductsEvent.OnCardClicked -> {
+
+
+                viewModelScope.launch {
+                    fetchAndSaveProductWithReviews(productId = event.product.id)
+
+                    val dao = getDao()
+
+                    val productWithReviews = dao!!.getProductWithReviews(event.product.id)
+
+                    _effect.send(ProductsEffect.OpenDetails(productWithReviews))
+
                 }
             }
         }
+    }
+
+    private suspend fun fetchAndSaveProductWithReviews(productId: Int) {
+        try {
+            val api = getApi()
+            val dao = getDao()
+            val response = api.getProductById(productId)
+
+            val product = ProductModel(
+                id = response.id,
+                title = response.title,
+                description = response.description,
+                price = response.price,
+                rating = response.rating,
+                imageUrl = response.imageUrl,
+                stock = response.stock
+            )
+
+            val reviews = response.reviews.map { review ->
+                review.copy(productId = response.id)
+            }
+
+            dao?.insertProductWithReviews(product, reviews)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 }

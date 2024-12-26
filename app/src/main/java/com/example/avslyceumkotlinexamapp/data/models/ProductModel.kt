@@ -1,35 +1,21 @@
 package com.example.avslyceumkotlinexamapp.data.models
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
-@Entity
 @Serializable
+@Entity
 data class ProductModel(
     @PrimaryKey val id: Int,
     val title: String,
     val description: String,
     val price: Double,
     val rating: Float,
-    @SerializedName("thumbnail")
     val imageUrl: String,
-    val stock: Int,
-    @Ignore
-    val reviews: List<ReviewModel>
-) {
-    constructor(
-        id: Int,
-        title: String,
-        description: String,
-        price: Double,
-        rating: Float,
-        imageUrl: String,
-        stock: Int,
-    ) : this(id, title, description, price, rating, imageUrl, stock, emptyList())
-}
+    val stock: Int
+)
+
 /*
 SAMPLE JSON
 {
